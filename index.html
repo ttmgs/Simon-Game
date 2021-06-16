@@ -1,130 +1,143 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Simon</title>
-    <link rel="stylesheet" href="styles.css" />
-    <link
-      href="https://fonts.googleapis.com/css?family=Press+Start+2P"
-      rel="stylesheet"
-    />
-  </head>
+<html lang="en" dir="ltr">
 
-  <body>
-    <h1 id="level-title">Press A Key to Start</h1>
-    <div class="container">
-      <div lass="row">
-        <div type="button" id="green" class="btn green"></div>
+<head>
+  <meta charset="utf-8">
+  <title>Simon</title>
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet">
+</head>
 
-        <div type="button" id="red" class="btn red"></div>
+<body>
+  <h1 id="level-title">Press A Key to Start</h1>
+  <div class="container">
+    <div lass="row">
+
+      <div type="button" id="green" class="btn green">
+
       </div>
 
-      <div class="row">
-        <div type="button" id="yellow" class="btn yellow"></div>
-        <div type="button" id="blue" class="btn blue"></div>
+      <div type="button" id="red" class="btn red">
+
       </div>
     </div>
+
+    <div class="row">
+
+      <div type="button" id="yellow" class="btn yellow">
+
+      </div>
+      <div type="button" id="blue" class="btn blue">
+
+      </div>
+
+    </div>
+
+  </div>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
     <script>
-      // creating an array of colors
-      var buttonColours = ["red", "blue", "green", "yellow"];
 
-      // creating an empty array to store the game pattern
-      var gamePattern = [];
+    //  array of colors
+var buttonColours = ["red", "blue", "green", "yellow"];
 
-      // creating an empty array to store the user clicked pattern
-      var userClickedPattern = [];
+// setting game pattern and user pattern to empty arrays
+var gamePattern = [];
+var userClickedPattern = [];
 
-      var started = false;
-      var level = 0;
+var started = false;
+var level = 0;
 
-      // kepress function- if not started then change title and call nextSequence function, then change the started var to true
-      $(document).keypress(function () {
-        if (!started) {
-          $("#level-title").text("Level " + level);
-          nextSequence();
-          started = true;
-        }
-      });
+// on keypress if started is flase change title and call nextSequence function. then set started to true
+$(document).keypress(function() {
+  if (!started) {
+    $("#level-title").text("Level " + level);
+    nextSequence();
+    started = true;
+  }
+});
 
-      // assigning users chosen color to an id and pushing the user chosen color to the empty array userclickedpattern
-      $(".btn").click(function () {
-        var userChosenColour = $(this).attr("id");
-        userClickedPattern.push(userChosenColour);
+// on color click add an id attribute and push that id into the empty array userclickedpattern
+$(".btn").click(function() {
 
-        // plays sound/animated on the click
-        playSound(userChosenColour);
-        animatePress(userChosenColour);
+  var userChosenColour = $(this).attr("id");
+  userClickedPattern.push(userChosenColour);
 
-        //2. Call checkAnswer() after a user has clicked and chosen their answer, passing in the index of the last answer in the user's sequence.
+  playSound(userChosenColour);
+  animatePress(userChosenColour);
 
-        // also storing the user clicked pattern into checkanswer()
-        checkAnswer(userClickedPattern.length - 1);
-      });
+  checkAnswer(userClickedPattern.length-1);
+});
 
-      //1. Create a new function called checkAnswer(), it should take one input with the name currentLevel
-      function checkAnswer(currentLevel) {
-        //3. Write an if statement inside checkAnswer() to check if the most recent user answer is the same as the game pattern. If so then log "success", otherwise log "wrong".
-        if (gamePattern[currentLevel] === userClickedPattern[currentLevel]) {
-          console.log("success");
+// checking if userclickedpattern is equal to game pattern - - if else statement
+function checkAnswer(currentLevel) {
 
-          //4. If the user got the most recent answer right in step 3, then check that they have finished their sequence with another if statement.
-          if (userClickedPattern.length === gamePattern.length) {
-            //5. Call nextSequence() after a 1000 millisecond delay.
-            setTimeout(function () {
-              nextSequence();
-            }, 1000);
-          }
-        } else {
-          console.log("wrong");
+    if (gamePattern[currentLevel] === userClickedPattern[currentLevel]) {
 
-          // playing wrong.mp3 in the sound folder if the user got one of the answers wrong.
-          playSound("wrong");
+      console.log("success");
 
-          // appling the game-over class to the body of the website when the user gets one of the answers wrong and then removing it after 200 milliseconds.
-          $("body").addClass("game-over");
-          setTimeout(function () {
-            $("body").removeClass("game-over");
-          }, 200);
-
-          // Changing the h1 title to say "Game Over, Press Any Key to Restart" if the user got the answer wrong.
-          $("#level-title").text("Game Over, Press Any Key to Restart");
-        }
-      }
-
-      function nextSequence() {
-        //6. Once nextSequence() is triggered, reset the userClickedPattern to an empty array ready for the next level.
-        userClickedPattern = [];
-
-        level++;
-        $("#level-title").text("Level " + level);
-
-        var randomNumber = Math.floor(Math.random() * 4);
-        var randomChosenColour = buttonColours[randomNumber];
-        gamePattern.push(randomChosenColour);
-
-        $("#" + randomChosenColour)
-          .fadeIn(100)
-          .fadeOut(100)
-          .fadeIn(100);
-        playSound(randomChosenColour);
-      }
-
-      function playSound(name) {
-        var audio = new Audio("sounds/" + name + ".mp3");
-        audio.play();
-      }
-
-      function animatePress(currentColor) {
-        $("#" + currentColor).addClass("pressed");
+      if (userClickedPattern.length === gamePattern.length){
         setTimeout(function () {
-          $("#" + currentColor).removeClass("pressed");
-        }, 100);
+          nextSequence();
+        }, 1000);
       }
+
+    } else {
+
+      console.log("wrong");
+
+      playSound("wrong");
+
+      $("body").addClass("game-over");
+      setTimeout(function () {
+        $("body").removeClass("game-over");
+      }, 200);
+
+      $("#level-title").text("Game Over, Press Any Key to Restart");
+
+      //2. Call startOver() if the user gets the sequence wrong.
+      startOver();
+    }
+
+}
+
+//  generating a random number and assiging a number to a color so it can be called by index number
+function nextSequence() {
+
+  userClickedPattern = [];
+  level++;
+  $("#level-title").text("Level " + level);
+
+  var randomNumber = Math.floor(Math.random() * 4);
+  var randomChosenColour = buttonColours[randomNumber];
+  gamePattern.push(randomChosenColour);
+
+  $("#" + randomChosenColour).fadeIn(100).fadeOut(100).fadeIn(100);
+  playSound(randomChosenColour);
+}
+
+function playSound(name) {
+  var audio = new Audio("sounds/" + name + ".mp3");
+  audio.play();
+}
+
+function animatePress(currentColor) {
+  $("#" + currentColor).addClass("pressed");
+  setTimeout(function () {
+    $("#" + currentColor).removeClass("pressed");
+  }, 100);
+}
+
+//1. Create a new function called startOver().
+function startOver() {
+
+  //3. Inside this function, you'll need to reset the values of level, gamePattern and started variables.
+  level = 0;
+  gamePattern = [];
+  started = false;
+}
+
     </script>
   </body>
 </html>
