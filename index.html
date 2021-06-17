@@ -50,7 +50,7 @@ var started = false;
 var level = 0;
 
 // on keypress if started is flase change title and call nextSequence function. then set started to true
-$(document).keypress(function() {
+$(document).on("tap", function() {
   if (!started) {
     $("#level-title").text("Level " + level);
     nextSequence();
